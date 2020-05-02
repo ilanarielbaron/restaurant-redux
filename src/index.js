@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "render-dom";
+import { render } from "react-dom";
 
 function Hi() {
   return <p>Hi.</p>;
