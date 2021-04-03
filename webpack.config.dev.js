@@ -1,8 +1,20 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const dotenv = require('dotenv');
 
 process.env.NODE_ENV = "development";
+
+const getKeys = () => {
+  // call dotenv and it will return an Object with a parsed key
+  const env = dotenv.config().parsed;
+
+  // reduce it to a nice object, the same as before
+  return Object.keys(env).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
+    return prev;
+  }, {});
+};
 
 module.exports = {
   mode: "development",
@@ -27,6 +39,7 @@ module.exports = {
       template: "src/index.html",
       favicon: "src/favicon.ico",
     }),
+    new webpack.DefinePlugin(getKeys())
   ],
   module: {
     rules: [
