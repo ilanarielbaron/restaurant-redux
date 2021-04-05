@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import TextInput from "../common/TextInput";
 import { useUser } from "../../hooks/useUser/useUser"
 
-export const Register = () => {
+export const Login = () => {
   const [newUser, setNewUser] = useState({});
   const [errors, setErrors] = useState({});
-  const { loading, register, error } = useUser()
+  const { loading, login, error } = useUser()
 
   function formIsValid() {
     const { user, password } = newUser;
@@ -22,7 +22,7 @@ export const Register = () => {
   function handleSave(event) {
     event.preventDefault();
     if (!formIsValid()) return;
-    register(newUser)
+    login(newUser)
   }
 
   function handleChange(event) {
@@ -33,16 +33,9 @@ export const Register = () => {
     }));
   }
 
-  function handleOwnerChange(event) {
-    const { name, checked } = event.target;
-    setNewUser(prevUser => ({
-      ...prevUser,
-      [name]: checked
-    }));  }
-
   return (
     <div>
-      <h2>Register User</h2>
+      <h2>Login User</h2>
       {error && <p>{error}</p>}
       <form onSubmit={handleSave}>
         <TextInput
@@ -60,17 +53,10 @@ export const Register = () => {
           onChange={handleChange}
           error={errors.password}
         />
-        <label htmlFor="isOwner"> Is Owner </label>
-        <input
-          type='checkbox'
-          name='isOwner'
-          onChange={handleOwnerChange}
-          checked={newUser.isOwner ?? false}
-        />
 
         <div>
           <button type="submit" disabled={loading} className="btn btn-primary">
-            {loading ? "Loading..." : "Sign Up"}
+            {loading ? "Loading..." : "Login"}
           </button>
         </div>
       </form>

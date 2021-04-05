@@ -1,17 +1,20 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useUser} from "../../hooks/useUser/useUser"
+import {OrdersTable} from "../order/table"
 
 export const HomePage = () => {
-  const { user, isUserLogged } = useUser()
-
-  useEffect(() => {
-    console.log(user)
-  }, [isUserLogged, user])
+  const {isOwner, isUserLogged, getUser} = useUser()
+  const userId = isUserLogged && getUser().id
 
   return (
     <div className="jumbotron">
       <h1>Toptal Challenge</h1>
-      <p>React, Redux and React Router for ultra-responsive web apps.</p>
+      {isUserLogged && !isOwner && (
+        <OrdersTable userId={userId} />
+        )}
+      {isUserLogged && isOwner && (
+        <OrdersTable />
+        )}
     </div>
   )
 }

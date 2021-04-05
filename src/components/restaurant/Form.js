@@ -1,0 +1,74 @@
+import React, {useState} from "react";
+import TextInput from "../common/TextInput";
+import {useRestaurant} from "../../hooks/useRestaurant/useRestaurant"
+import PropTypes from "prop-types"
+
+export const RestaurantForm = (restaurant = {}) => {
+  const [newRestaurant, setNewRestaurant] = useState({name: restaurant?.restaurant?.name, description: restaurant?.restaurant?.description});
+  const [errors, setErrors] = useState({});
+  const { loading, error, createRestaurant, editRestaurant } = useRestaurant()
+
+  function formIsValid() {
+    const { name, description } = newRestaurant;
+    const errors = {};
+
+    if (!name) errors.name = "Name is required.";
+    if (!description) errors.description = "Description is required";
+
+    setErrors(errors);
+    // Form is valid if the errors object still has no properties
+    return Object.keys(errors).length === 0;
+  }
+
+  function handleSave(event) {
+    event.preventDefault();
+    if (!formIsValid()) return;
+    if(restaurant?.restaurant?.id) {
+      editRestaurant(newRestaurant, restaurant.restaurant.id)
+    } else {
+      createRestaurant(newRestaurant)
+    }
+    setNewRestaurant({})
+  }
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setNewRestaurant(prevRestaurant => ({
+      ...prevRestaurant,
+      [name]: value
+    }));
+  }
+
+  return (
+    <div>
+      <h2>{restaurant?.restaurant?.id ? 'Edit' : 'Create'} Restaurant</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <form onSubmit={handleSave}>
+        <TextInput
+          name="name"
+          label="Name"
+          value={newRestaurant.name}
+          onChange={handleChange}
+          error={errors.name}
+        />
+        <TextInput
+          name="description"
+          label="Description"
+          value={newRestaurant.description}
+          onChange={handleChange}
+          error={errors.description}
+        />
+
+        <div>
+          <button type="submit" disabled={loading} className="btn btn-primary">
+            {loading ? "Loading..." : !restaurant?.restaurant?.id ? "Create" : "Edit"}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+RestaurantForm.propTypes = {
+  restaurant: PropTypes.object
+};

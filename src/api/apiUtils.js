@@ -2,7 +2,7 @@ import {createClient} from '@supabase/supabase-js'
 
 export function handleResponse(response) {
   if (!response.error) return response.data ?? response
-  if (response.error.status > 400) {
+  if (response.error.status >= 400) {
     return {error: response.error.message}
   }
 }
