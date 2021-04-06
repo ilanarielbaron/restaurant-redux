@@ -7,7 +7,7 @@ import {Login} from "../login/Login"
 const Header = () => {
   const [registerOpen, setRegisterOpen] = useState(false)
   const [loginOpen, setLoginOpen] = useState(false)
-  const {isUserLogged, logout, isOwner} = useUser()
+  const { isUserLogged, logout, isOwner } = useUser()
 
   const activeStyle = {color: "#f15b2a"};
   return (

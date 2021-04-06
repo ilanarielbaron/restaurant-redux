@@ -22,7 +22,7 @@ export const Login = () => {
   function handleSave(event) {
     event.preventDefault();
     if (!formIsValid()) return;
-    login(newUser)
+    login({user: newUser})
   }
 
   function handleChange(event) {

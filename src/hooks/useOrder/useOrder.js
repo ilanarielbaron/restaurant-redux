@@ -23,7 +23,7 @@ export const useOrder = () => {
     RECEIVED: 'Received'
   }
 
-  const fetchOrders = (userId) => {
+  const fetchOrders = ({userId}) => {
     dispatch(beginApiCall());
     orderApi.getAllOrdersForUser(userId).then((res) => {
       const dataResponse = handleResponse(res)
@@ -40,7 +40,7 @@ export const useOrder = () => {
     })
   }
 
-  const createOrder = (order, meals) => {
+  const createOrder = ({order, meals}) => {
     dispatch(beginApiCall());
     orderApi.createOrder(order).then((res) => {
       const dataResponse = handleResponse(res)
@@ -51,7 +51,7 @@ export const useOrder = () => {
       } else {
         dispatch(createOrderSuccess(dataResponse ?? []))
         meals.forEach((meal) => {
-          createOrderMeal(dataResponse[0].id, meal)
+          createOrderMeal({orderId: dataResponse[0].id, meal})
         })
         setSuccess(true)
       }
@@ -63,7 +63,7 @@ export const useOrder = () => {
     })
   }
 
-  const createOrderMeal = (orderId, meal) => {
+  const createOrderMeal = ({orderId, meal}) => {
     dispatch(beginApiCall());
     orderApi.createMealOrder(orderId, meal.id).then((res) => {
       const dataResponse = handleResponse(res)
@@ -82,7 +82,7 @@ export const useOrder = () => {
     })
   }
 
-  const updateOrderStatus = (order, newStatus) => {
+  const updateOrderStatus = ({order, newStatus}) => {
     dispatch(beginApiCall());
     orderApi.updateOrderStatus(newStatus, order.id).then((res) => {
       const dataResponse = handleResponse(res)
@@ -91,7 +91,7 @@ export const useOrder = () => {
         setError(dataResponse.error)
       } else {
         dispatch(updateOrderStatusSuccess(dataResponse ?? []))
-        addOrderStatusChange({from: order.status, to: newStatus, orderId: order.id})
+        addOrderStatusChange({statusHistory: {from: order.status, to: newStatus, orderId: order.id}})
       }
     }).catch((e) => {
       setError(e.error)
@@ -100,7 +100,7 @@ export const useOrder = () => {
     })
   }
 
-  const addOrderStatusChange = (statusHistory) => {
+  const addOrderStatusChange = ({statusHistory}) => {
     dispatch(beginApiCall());
     orderApi.addOrderStatusChange(statusHistory).then((res) => {
       const dataResponse = handleResponse(res)

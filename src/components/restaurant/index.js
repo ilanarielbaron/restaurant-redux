@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState } from "react"
 import { RestaurantForm } from "./Form"
-import {useRestaurant} from "../../hooks/useRestaurant/useRestaurant"
-import {Meal} from "../meal"
-import {useUser} from "../../hooks/useUser/useUser"
+import { useRestaurant } from "../../hooks/useRestaurant/useRestaurant"
+import { Meal } from "../meal"
+import { useUser } from "../../hooks/useUser/useUser"
 
 export const Restaurant = () => {
   const { fetchRestaurants, removeRestaurant, restaurants } = useRestaurant()
@@ -16,11 +16,8 @@ export const Restaurant = () => {
   }, [])
 
   const handleSelectRestaurant = (restaurant) => {
-    if(restaurantToEdit === restaurant) {
-      setRestaurantToEdit(undefined)
-    } else {
-      setRestaurantToEdit(restaurant)
-    }
+    setCreateRestaurantOpen(undefined)
+    setRestaurantToEdit(restaurant)
   }
 
   if (restaurantSelected) {
@@ -41,13 +38,16 @@ export const Restaurant = () => {
           <div key={restaurant.id}>
             {restaurant.name}
             {isOwner && <button onClick={() => {handleSelectRestaurant(restaurant)}}>Edit</button>}
-            {isOwner && <button onClick={() => {removeRestaurant(restaurant.id)}}>Remove</button>}
+            {isOwner && <button onClick={() => {removeRestaurant({id: restaurant.id})}}>Remove</button>}
             <button onClick={() => {setRestaurantSelected(restaurant)}}>Show Meals</button>
           </div>
         )
       })}
 
-      {isOwner && <button onClick={() => setCreateRestaurantOpen(!createRestaurantOpen)}>Create Restaurant</button>}
+      {isOwner && <button onClick={() => {
+        setCreateRestaurantOpen(!createRestaurantOpen)
+        setRestaurantToEdit(undefined)
+      }}>Create Restaurant</button>}
 
       {createRestaurantOpen && <RestaurantForm />}
       {restaurantToEdit && <RestaurantForm restaurant={restaurantToEdit}/>}

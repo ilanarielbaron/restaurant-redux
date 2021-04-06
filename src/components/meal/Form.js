@@ -5,45 +5,21 @@ import PropTypes from "prop-types"
 import {useRestaurant} from "../../hooks/useRestaurant/useRestaurant"
 import SelectInput from "../common/SelectInput"
 
-export const MealForm = (meal = {}) => {
-  const [newMeal, setNewMeal] = useState({name: meal?.meal?.name, description: meal?.meal?.description, price: meal?.meal?.price});
-  const [errors, setErrors] = useState({});
-  const [selectedRestaurant, setSelectedRestaurant] = useState(meal?.meal?.restaurantId);
-  const { loading, error, createMeal, editMeal } = useMeal()
+export const MealForm = ({ meal = {}, handleSave, errors }) => {
+  const [newMeal, setNewMeal] = useState({ name: meal.name, description: meal.description, price: meal.price });
+  const { loading, error } = useMeal()
   const { restaurants, fetchRestaurants } = useRestaurant()
+  const [selectedRestaurant, setSelectedRestaurant] = useState(meal.restaurantId);
 
   const restaurantFormatted = restaurants?.length > 0 ? restaurants?.map((restaurant) => {
-    return {text: restaurant.name, value: restaurant.id}
+    return { text: restaurant.name, value: restaurant.id }
   }) : []
 
   useEffect(() => {
     fetchRestaurants()
   }, [])
 
-  function formIsValid() {
-    const { name, description, price } = newMeal;
-    const errors = {};
-
-    if (!name) errors.name = "Name is required.";
-    if (!description) errors.description = "Description is required";
-    if (!price) errors.price = "Price is required";
-
-    setErrors(errors);
-    // Form is valid if the errors object still has no properties
-    return Object.keys(errors).length === 0;
-  }
-
-  function handleSave(event) {
-    event.preventDefault();
-    if (!formIsValid()) return;
-    if(meal?.meal?.id) {
-      editMeal(newMeal, meal.meal.id, selectedRestaurant)
-    } else {
-      createMeal(newMeal, selectedRestaurant)
-    }
-  }
-
-  function handleChange(event) {
+  const handleChange = (event) => {
     const { name, value } = event.target;
     setNewMeal(prevMeal => ({
       ...prevMeal,
@@ -51,15 +27,20 @@ export const MealForm = (meal = {}) => {
     }));
   }
 
-  function handleOptionChange(event) {
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    handleSave(newMeal)
+  }
+
+  const handleRestaurantOptionChange = (event) => {
     setSelectedRestaurant(event.target.value)
   }
 
   return (
     <div>
-      <h2>{meal?.meal?.id ? 'Edit' : 'Create'} Meal</h2>
+      <h2>{meal.id ? 'Edit' : 'Create'} Meal</h2>
       {error && <p>{error}</p>}
-      <form onSubmit={handleSave}>
+      <form onSubmit={handleSubmit}>
         <TextInput
           name="name"
           label="Name"
@@ -82,10 +63,10 @@ export const MealForm = (meal = {}) => {
           onChange={handleChange}
           error={errors.price}
         />
-        <SelectInput onChange={handleOptionChange} label='Restaurant' name='restaurantId' value={selectedRestaurant} error={errors.restaurant} options={restaurantFormatted} />
+        <SelectInput onChange={handleRestaurantOptionChange} label='Restaurant' name='restaurantId' value={selectedRestaurant} error={errors.restaurant} options={restaurantFormatted} />
         <div>
           <button type="submit" disabled={loading} className="btn btn-primary">
-            {loading ? "Loading..." : !meal?.meal?.id ? "Create" : "Edit"}
+            {loading ? "Loading..." : !meal.id ? "Create" : "Edit"}
           </button>
         </div>
       </form>
@@ -94,5 +75,7 @@ export const MealForm = (meal = {}) => {
 }
 
 MealForm.propTypes = {
-  meal: PropTypes.object
+  meal: PropTypes.object,
+  errors: PropTypes.object.isRequired,
+  handleSave: PropTypes.func.isRequired
 };

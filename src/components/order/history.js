@@ -1,13 +1,12 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-export const History = ({historyArray}) => {
-  console.log(historyArray)
+export const History = ({ historyArray }) => {
   return (
     <div>
       {historyArray.map((history) => {
         return (
-          <p key={history.id}>{history.from} - {history.to}</p>
+          <p key={history.id}>From: {history.from} - To: {history.to}</p>
         )
       })}
     </div>

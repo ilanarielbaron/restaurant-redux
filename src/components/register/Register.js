@@ -22,7 +22,7 @@ export const Register = () => {
   function handleSave(event) {
     event.preventDefault();
     if (!formIsValid()) return;
-    register(newUser)
+    register({user: newUser})
   }
 
   function handleChange(event) {

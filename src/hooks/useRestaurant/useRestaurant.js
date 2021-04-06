@@ -34,7 +34,7 @@ export const useRestaurant = () => {
     }
   }
 
-  const createRestaurant = (restaurant) => {
+  const createRestaurant = ({restaurant}) => {
     dispatch(beginApiCall());
     restaurantApi.createRestaurant(restaurant).then((res) => {
       const dataResponse = handleResponse(res)
@@ -51,7 +51,7 @@ export const useRestaurant = () => {
     })
   }
 
-  const editRestaurant = (restaurant, id) => {
+  const editRestaurant = ({restaurant, id}) => {
     dispatch(beginApiCall());
     restaurantApi.editRestaurant(restaurant, id).then((res) => {
       const dataResponse = handleResponse(res)
@@ -68,7 +68,7 @@ export const useRestaurant = () => {
     })
   }
 
-  const removeRestaurant = (id) => {
+  const removeRestaurant = ({id}) => {
     dispatch(beginApiCall());
     restaurantApi.removeRestaurant(id).then((res) => {
       const dataResponse = handleResponse(res)

@@ -58,7 +58,7 @@ export const useUser = () => {
     })
   }
 
-  const register = (user) => {
+  const register = ({user}) => {
     dispatch(beginApiCall());
     userApi.registerUser(user).then((res) => {
       const dataResponse = handleResponse(res)
@@ -67,7 +67,7 @@ export const useUser = () => {
         setError(dataResponse.error)
       } else {
         dispatch(registerUserSuccess(user))
-        userOwner(user, dataResponse.id)
+        userOwner({user, id: dataResponse.id})
       }
     }).catch((e) => {
       setError(e.error)
@@ -76,7 +76,7 @@ export const useUser = () => {
     })
   }
 
-  const userOwner = (user, id) => {
+  const userOwner = ({user, id}) => {
     dispatch(beginApiCall());
     userApi.makeUserOwner(user, id).then((res) => {
       const dataResponse = handleResponse(res)
@@ -93,7 +93,7 @@ export const useUser = () => {
     })
   }
 
-  const login = (user) => {
+  const login = ({user}) => {
     dispatch(beginApiCall());
     userApi.loginUser(user).then((res) => {
       const dataResponse = handleResponse(res)

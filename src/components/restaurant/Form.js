@@ -3,8 +3,8 @@ import TextInput from "../common/TextInput";
 import {useRestaurant} from "../../hooks/useRestaurant/useRestaurant"
 import PropTypes from "prop-types"
 
-export const RestaurantForm = (restaurant = {}) => {
-  const [newRestaurant, setNewRestaurant] = useState({name: restaurant?.restaurant?.name, description: restaurant?.restaurant?.description});
+export const RestaurantForm = ({ restaurant = {} }) => {
+  const [newRestaurant, setNewRestaurant] = useState({name: restaurant.name, description: restaurant.description});
   const [errors, setErrors] = useState({});
   const { loading, error, createRestaurant, editRestaurant } = useRestaurant()
 
@@ -23,10 +23,10 @@ export const RestaurantForm = (restaurant = {}) => {
   function handleSave(event) {
     event.preventDefault();
     if (!formIsValid()) return;
-    if(restaurant?.restaurant?.id) {
-      editRestaurant(newRestaurant, restaurant.restaurant.id)
+    if(restaurant.id) {
+      editRestaurant({restaurant: newRestaurant, id: restaurant.id})
     } else {
-      createRestaurant(newRestaurant)
+      createRestaurant({restaurant: newRestaurant})
     }
     setNewRestaurant({})
   }
@@ -41,7 +41,7 @@ export const RestaurantForm = (restaurant = {}) => {
 
   return (
     <div>
-      <h2>{restaurant?.restaurant?.id ? 'Edit' : 'Create'} Restaurant</h2>
+      <h2>{restaurant.id ? 'Edit' : 'Create'} Restaurant</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSave}>
         <TextInput
@@ -61,7 +61,7 @@ export const RestaurantForm = (restaurant = {}) => {
 
         <div>
           <button type="submit" disabled={loading} className="btn btn-primary">
-            {loading ? "Loading..." : !restaurant?.restaurant?.id ? "Create" : "Edit"}
+            {loading ? "Loading..." : !restaurant.id ? "Create" : "Edit"}
           </button>
         </div>
       </form>

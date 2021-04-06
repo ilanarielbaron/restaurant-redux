@@ -34,7 +34,7 @@ export const useMeal = () => {
     }
   }
 
-  const createMeal = (meal, selectedRestaurant) => {
+  const createMeal = ({meal, selectedRestaurant}) => {
     dispatch(beginApiCall());
     mealApi.createMeal(meal, selectedRestaurant).then((res) => {
       const dataResponse = handleResponse(res)
@@ -51,7 +51,7 @@ export const useMeal = () => {
     })
   }
 
-  const editMeal = (meal, id, selectedRestaurant) => {
+  const editMeal = ({meal, id, selectedRestaurant}) => {
     dispatch(beginApiCall());
     mealApi.editMeal(meal, id, selectedRestaurant).then((res) => {
       const dataResponse = handleResponse(res)
@@ -68,7 +68,7 @@ export const useMeal = () => {
     })
   }
 
-  const removeMeal = (id) => {
+  const removeMeal = ({id}) => {
     dispatch(beginApiCall());
     mealApi.removeMeal(id).then((res) => {
       const dataResponse = handleResponse(res)
