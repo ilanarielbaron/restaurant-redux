@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react"
-import { useMeal } from "../../hooks/useMeal/useMeal"
-import { MealForm } from "./Form"
-import { useUser } from "../../hooks/useUser/useUser"
-import { useOrder } from "../../hooks/useOrder/useOrder"
+import React, {useEffect, useState} from "react"
+import {useMeal} from "../../hooks/useMeal/useMeal"
+import {MealForm} from "./Form"
+import {useUser} from "../../hooks/useUser/useUser"
+import {useOrder} from "../../hooks/useOrder/useOrder"
 import PropTypes from "prop-types"
+import {toast} from "react-toastify"
 
-export const Meal = ({ restaurant }) => {
-  const { fetchMeals, meals, removeMeal, editMeal, createMeal } = useMeal()
+export const Meal = ({restaurant}) => {
+  const {fetchMeals, meals, removeMeal, editMeal, createMeal, error} = useMeal()
   const [createMealOpen, setCreateMealOpen] = useState(false)
   const [mealToEdit, setMealToEdit] = useState()
   const [mealsToDisplay, setMealsToDisplay] = useState(meals)
   const [mealsSelected, setMealsSelected] = useState([])
-  const { isOwner, isUserLogged, getUser } = useUser()
-  const { createOrder, success } = useOrder()
+  const {isOwner, isUserLogged, getUser} = useUser()
+  const {createOrder, success: orderSuccess} = useOrder()
   const canPlaceOrder = isUserLogged && restaurant && !isOwner
   const [errors, setErrors] = useState({});
 
@@ -40,7 +41,7 @@ export const Meal = ({ restaurant }) => {
   const handlePlaceOrder = () => {
     const orderTotal = getOrderTotal()
     const order = {total: orderTotal, restaurantId: restaurant?.id, userId: getUser().id}
-    createOrder({order, mealsSelected})
+    createOrder({order, meals: mealsSelected})
   }
 
   const getOrderTotal = () => {
@@ -51,15 +52,24 @@ export const Meal = ({ restaurant }) => {
 
   const handleSave = (newMeal, selectedRestaurant) => {
     if (!formIsValid(newMeal)) return;
-    if(mealToEdit?.id) {
-      editMeal({newMeal, id: mealToEdit.id, selectedRestaurant})
+    if (mealToEdit?.id) {
+      editMeal({meal: newMeal, id: mealToEdit.id, selectedRestaurant})
     } else {
-      createMeal({newMeal, selectedRestaurant})
+      createMeal({meal: newMeal, selectedRestaurant})
     }
   }
 
+  useEffect(() => {
+    error && toast.error(error)
+  }, [error])
+
+  useEffect(() => {
+    orderSuccess && toast.success('Order created')
+    setMealsSelected([])
+  }, [orderSuccess])
+
   const formIsValid = (newMeal) => {
-    const { name, description, price } = newMeal;
+    const {name, description, price} = newMeal;
     const errors = {};
 
     if (!name) errors.name = "Name is required.";
@@ -72,44 +82,63 @@ export const Meal = ({ restaurant }) => {
   }
 
   return (
-    <div>
-      <h2>Meals</h2>
-      {success && <p>Order created successful</p>}
-      {mealsToDisplay.map((meal) => {
-        return (
-          <div key={meal.id}>
-            {meal.name}
-            {isOwner &&
-            <div>
-              <button onClick={() => {
-                handleSelectMeal(meal)
-              }}>Edit
-              </button>
-              <button onClick={() => {
-                removeMeal({id: meal.id})
-              }}>Remove
-              </button>
-            </div>}
-            {canPlaceOrder && !mealsSelected.includes(meal) && <button onClick={() => {
-              handleAddMealToOrder(meal)
-            }}>Add to order</button>}
-            {canPlaceOrder && mealsSelected.includes(meal) && <button onClick={() => {
-              handleRemoveMealFromOrder(meal)
-            }}>Remove from order</button>}
-          </div>
-        )
-      })}
-      {isOwner && <button onClick={() => {
-        setCreateMealOpen(true)
-        setMealToEdit(undefined)
-      }}>Create Meal</button>}
-      {canPlaceOrder &&
-      <div>
-        <button disabled={mealsSelected.length === 0} onClick={handlePlaceOrder}>Place Order</button>
-        <p>{`Order Total: $${getOrderTotal()}`}</p>
-      </div>}
-      {createMealOpen && <MealForm handleSave={handleSave} errors={errors}/>}
-      {mealToEdit && <MealForm meal={mealToEdit} handleSave={handleSave} errors={errors} />}
+    <div className='card'>
+      <div className='card-body'>
+        <div>
+          <h2 className='card-title'>Meals</h2>
+          <table className='table'>
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {mealsToDisplay.map((meal, index) => {
+              return (
+                <tr key={meal.id}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{meal.name}</td>
+                  <td>
+                    {isOwner &&
+                    <div className="btn-group" role="group">
+                      <button className='btn btn-secondary' onClick={() => {
+                        handleSelectMeal(meal)
+                      }}>Edit
+                      </button>
+                      <button className='btn btn-danger' onClick={() => {
+                        removeMeal({id: meal.id})
+                      }}>Remove
+                      </button>
+                    </div>}
+                    {canPlaceOrder && !mealsSelected.includes(meal) &&
+                    <button className='btn btn-secondary' onClick={() => {
+                      handleAddMealToOrder(meal)
+                    }}>Add to order</button>}
+                    {canPlaceOrder && mealsSelected.includes(meal) &&
+                    <button className='btn btn-secondary' onClick={() => {
+                      handleRemoveMealFromOrder(meal)
+                    }}>Remove from order</button>}
+                  </td>
+                </tr>
+              )
+            })}
+            </tbody>
+          </table>
+          {isOwner && <button className='btn btn-secondary' onClick={() => {
+            setCreateMealOpen(true)
+            setMealToEdit(undefined)
+          }}>Create Meal</button>}
+          {canPlaceOrder &&
+          <div>
+            <button className='btn btn-secondary' disabled={mealsSelected.length === 0} onClick={handlePlaceOrder}>Place Order</button>
+            <p>{`Order Total: $${getOrderTotal()}`}</p>
+          </div>}
+          {createMealOpen && <MealForm handleSave={handleSave} errors={errors}/>}
+          {mealToEdit && <MealForm meal={mealToEdit} handleSave={handleSave} errors={errors}/>}
+        </div>
+      </div>
     </div>
   )
 }

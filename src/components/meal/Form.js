@@ -37,7 +37,7 @@ export const MealForm = ({ meal = {}, handleSave, errors }) => {
   }
 
   return (
-    <div>
+    <div style={{marginTop: 20}} className='card card-body'>
       <h2>{meal.id ? 'Edit' : 'Create'} Meal</h2>
       {error && <p>{error}</p>}
       <form onSubmit={handleSubmit}>

@@ -12,12 +12,14 @@ import { handleError, handleResponse } from "../../api/apiUtils"
 
 export const useRestaurant = () => {
   const dispatch = useDispatch()
-  const [error, setError] = useState()
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const restaurants = useSelector( state => state.restaurants)
 
   const fetchRestaurants = () => {
     if(restaurants.length === 0) {
       dispatch(beginApiCall());
+      setError('')
       restaurantApi.getAllRestaurants().then((res) => {
         const dataResponse = handleResponse(res)
         if (dataResponse.error) {
@@ -36,12 +38,14 @@ export const useRestaurant = () => {
 
   const createRestaurant = ({restaurant}) => {
     dispatch(beginApiCall());
+    setError('')
     restaurantApi.createRestaurant(restaurant).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
         dispatch(apiCallError())
         setError(dataResponse.error)
       } else {
+        setSuccess('Restaurant created successfully')
         dispatch(createRestaurantSuccess(dataResponse ?? []))
       }
     }).catch((e) => {
@@ -53,12 +57,14 @@ export const useRestaurant = () => {
 
   const editRestaurant = ({restaurant, id}) => {
     dispatch(beginApiCall());
+    setError('')
     restaurantApi.editRestaurant(restaurant, id).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
         dispatch(apiCallError())
         setError(dataResponse.error)
       } else {
+        setSuccess('Restaurant edited successfully')
         dispatch(editRestaurantSuccess(dataResponse ?? []))
       }
     }).catch((e) => {
@@ -70,12 +76,15 @@ export const useRestaurant = () => {
 
   const removeRestaurant = ({id}) => {
     dispatch(beginApiCall());
+    setError('')
+    setSuccess('')
     restaurantApi.removeRestaurant(id).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
         dispatch(apiCallError())
         setError(dataResponse.error)
       } else {
+        setSuccess('Restaurant removed successfully')
         dispatch(removeRestaurantSuccess(id))
       }
     }).catch((e) => {
@@ -86,7 +95,8 @@ export const useRestaurant = () => {
   }
 
   return {
-    error: error,
+    error,
+    success,
     fetchRestaurants,
     createRestaurant,
     editRestaurant,

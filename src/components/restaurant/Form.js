@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TextInput from "../common/TextInput";
 import {useRestaurant} from "../../hooks/useRestaurant/useRestaurant"
 import PropTypes from "prop-types"
+import {toast} from "react-toastify"
 
 export const RestaurantForm = ({ restaurant = {} }) => {
   const [newRestaurant, setNewRestaurant] = useState({name: restaurant.name, description: restaurant.description});
@@ -39,10 +40,13 @@ export const RestaurantForm = ({ restaurant = {} }) => {
     }));
   }
 
+  useEffect(() => {
+    error && toast.error(error)
+  }, [error])
+
   return (
-    <div>
+    <div style={{marginTop: 20}} className='card card-body'>
       <h2>{restaurant.id ? 'Edit' : 'Create'} Restaurant</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSave}>
         <TextInput
           name="name"
@@ -71,4 +75,5 @@ export const RestaurantForm = ({ restaurant = {} }) => {
 
 RestaurantForm.propTypes = {
   restaurant: PropTypes.object
-};
+}
+

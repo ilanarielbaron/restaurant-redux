@@ -41,8 +41,7 @@ export const Register = () => {
     }));  }
 
   return (
-    <div>
-      <h2>Register User</h2>
+    <div style={containerStyle} className='card card-body'>
       {error && <p>{error}</p>}
       <form onSubmit={handleSave}>
         <TextInput
@@ -69,11 +68,18 @@ export const Register = () => {
         />
 
         <div>
-          <button type="submit" disabled={loading} className="btn btn-primary">
+          <button type="submit" disabled={loading} className="btn btn-primary btn-lg btn-block">
             {loading ? "Loading..." : "Sign Up"}
           </button>
         </div>
       </form>
     </div>
   )
+}
+
+const containerStyle = {
+  zIndex: 1,
+  position: 'absolute',
+  top: '90%',
+  left: '67%'
 }

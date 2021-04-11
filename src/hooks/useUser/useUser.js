@@ -26,6 +26,7 @@ export const useUser = () => {
     const loggedUser = getUser()
     if(!loggedUser) return false
     dispatch(beginApiCall());
+    setError('')
     userApi.getUserType(loggedUser.id).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
@@ -43,6 +44,7 @@ export const useUser = () => {
 
   const logout = () => {
     dispatch(beginApiCall());
+    setError('')
     userApi.logout().then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
@@ -60,6 +62,7 @@ export const useUser = () => {
 
   const register = ({user}) => {
     dispatch(beginApiCall());
+    setError('')
     userApi.registerUser(user).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
@@ -78,6 +81,7 @@ export const useUser = () => {
 
   const userOwner = ({user, id}) => {
     dispatch(beginApiCall());
+    setError('')
     userApi.makeUserOwner(user, id).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
@@ -95,6 +99,7 @@ export const useUser = () => {
 
   const login = ({user}) => {
     dispatch(beginApiCall());
+    setError('')
     userApi.loginUser(user).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {

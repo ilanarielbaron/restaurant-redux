@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import TextInput from "../common/TextInput";
 import { useUser } from "../../hooks/useUser/useUser"
+import {toast} from "react-toastify"
 
 export const Login = () => {
   const [newUser, setNewUser] = useState({});
@@ -25,6 +26,10 @@ export const Login = () => {
     login({user: newUser})
   }
 
+  useEffect(() => {
+    error && toast.error(error)
+  }, [error])
+
   function handleChange(event) {
     const { name, value } = event.target;
     setNewUser(prevUser => ({
@@ -34,9 +39,7 @@ export const Login = () => {
   }
 
   return (
-    <div>
-      <h2>Login User</h2>
-      {error && <p>{error}</p>}
+    <div style={containerStyle} className='card card-body'>
       <form onSubmit={handleSave}>
         <TextInput
           name="user"
@@ -55,11 +58,18 @@ export const Login = () => {
         />
 
         <div>
-          <button type="submit" disabled={loading} className="btn btn-primary">
+          <button type="submit" disabled={loading} className="btn btn-primary btn-lg btn-block">
             {loading ? "Loading..." : "Login"}
           </button>
         </div>
       </form>
     </div>
   )
+}
+
+const containerStyle = {
+  zIndex: 1,
+  position: 'absolute',
+  top: '90%',
+  left: '67%'
 }

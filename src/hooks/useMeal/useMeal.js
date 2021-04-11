@@ -18,6 +18,7 @@ export const useMeal = () => {
   const fetchMeals = () => {
     if(meals.length === 0) {
       dispatch(beginApiCall());
+      setError('')
       mealApi.getAllMeals().then((res) => {
         const dataResponse = handleResponse(res)
         if(dataResponse.error) {
@@ -36,6 +37,7 @@ export const useMeal = () => {
 
   const createMeal = ({meal, selectedRestaurant}) => {
     dispatch(beginApiCall());
+    setError('')
     mealApi.createMeal(meal, selectedRestaurant).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
@@ -53,6 +55,7 @@ export const useMeal = () => {
 
   const editMeal = ({meal, id, selectedRestaurant}) => {
     dispatch(beginApiCall());
+    setError('')
     mealApi.editMeal(meal, id, selectedRestaurant).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
@@ -70,6 +73,7 @@ export const useMeal = () => {
 
   const removeMeal = ({id}) => {
     dispatch(beginApiCall());
+    setError('')
     mealApi.removeMeal(id).then((res) => {
       const dataResponse = handleResponse(res)
       if(dataResponse.error) {
@@ -86,7 +90,7 @@ export const useMeal = () => {
   }
 
   return {
-    error: error,
+    error,
     fetchMeals,
     createMeal,
     editMeal,
