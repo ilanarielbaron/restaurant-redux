@@ -135,8 +135,8 @@ export const Meal = ({restaurant}) => {
             <button className='btn btn-secondary' disabled={mealsSelected.length === 0} onClick={handlePlaceOrder}>Place Order</button>
             <p>{`Order Total: $${getOrderTotal()}`}</p>
           </div>}
-          {createMealOpen && <MealForm handleSave={handleSave} errors={errors}/>}
-          {mealToEdit && <MealForm meal={mealToEdit} handleSave={handleSave} errors={errors}/>}
+          {createMealOpen && isUserLogged && <MealForm handleSave={handleSave} errors={errors}/>}
+          {mealToEdit && isUserLogged && <MealForm meal={mealToEdit} handleSave={handleSave} errors={errors}/>}
         </div>
       </div>
     </div>

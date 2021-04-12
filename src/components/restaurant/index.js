@@ -10,7 +10,7 @@ export const Restaurant = () => {
   const [createRestaurantOpen, setCreateRestaurantOpen] = useState(false)
   const [restaurantToEdit, setRestaurantToEdit] = useState()
   const [restaurantSelected, setRestaurantSelected] = useState()
-  const {isOwner} = useUser()
+  const {isOwner, isUserLogged} = useUser()
 
   useEffect(() => {
     fetchRestaurants()
@@ -82,8 +82,8 @@ export const Restaurant = () => {
           setRestaurantToEdit(undefined)
         }}>Create Restaurant</button>}
 
-        {createRestaurantOpen && <RestaurantForm/>}
-        {restaurantToEdit && <RestaurantForm restaurant={restaurantToEdit}/>}
+        {createRestaurantOpen && isUserLogged && <RestaurantForm/>}
+        {restaurantToEdit && isUserLogged && <RestaurantForm restaurant={restaurantToEdit}/>}
       </div>
     </div>
   )

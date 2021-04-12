@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import TextInput from "../common/TextInput";
 import { useUser } from "../../hooks/useUser/useUser"
+import {toast} from "react-toastify"
 
 export const Register = () => {
   const [newUser, setNewUser] = useState({});
@@ -18,6 +19,10 @@ export const Register = () => {
     // Form is valid if the errors object still has no properties
     return Object.keys(errors).length === 0;
   }
+
+  useEffect(() => {
+    error && toast.error(error)
+  }, [error])
 
   function handleSave(event) {
     event.preventDefault();
@@ -42,7 +47,6 @@ export const Register = () => {
 
   return (
     <div style={containerStyle} className='card card-body'>
-      {error && <p>{error}</p>}
       <form onSubmit={handleSave}>
         <TextInput
           name="user"
